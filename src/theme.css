@@ -1,0 +1,85 @@
+:root {
+  color-scheme: light;
+
+  --white: #ffffff;
+  --black: #000000;
+  --maroon: #630819;
+  --yellow: #f2c811;
+
+  --ink: color-mix(in srgb, var(--black) 88%, var(--white));
+  --muted: color-mix(in srgb, var(--black) 62%, var(--white));
+  --faint: color-mix(in srgb, var(--black) 48%, var(--white));
+  --maroon-deep: color-mix(in srgb, var(--maroon) 78%, var(--black));
+  --maroon-soft: color-mix(in srgb, var(--maroon) 8%, var(--white));
+  --maroon-soft-strong: color-mix(in srgb, var(--maroon) 14%, var(--white));
+  --yellow-deep: color-mix(in srgb, var(--yellow) 48%, var(--black));
+  --yellow-soft: color-mix(in srgb, var(--yellow) 14%, var(--white));
+  --yellow-soft-strong: color-mix(in srgb, var(--yellow) 22%, var(--white));
+
+  --body-ink: var(--ink);
+  --body-canvas: color-mix(in srgb, var(--black) 2%, var(--white));
+  --canvas: var(--body-canvas);
+  --surface: var(--white);
+  --surface-subtle: color-mix(in srgb, var(--yellow) 7%, var(--white));
+  --surface-muted: color-mix(in srgb, var(--black) 3%, var(--white));
+  --surface-hover: color-mix(in srgb, var(--yellow) 10%, var(--white));
+  --line: color-mix(in srgb, var(--maroon) 13%, var(--white));
+  --line-strong: color-mix(in srgb, var(--maroon) 34%, var(--white));
+
+  --field-label: color-mix(in srgb, var(--black) 76%, var(--white));
+  --placeholder: var(--faint);
+  --text-mid: color-mix(in srgb, var(--black) 72%, var(--white));
+  --text-soft: var(--muted);
+  --neutral-soft: color-mix(in srgb, var(--black) 4%, var(--white));
+  --neutral-border: color-mix(in srgb, var(--black) 16%, var(--white));
+
+  --focus-ring: rgba(99, 8, 25, 0.18);
+  --backdrop: rgba(0, 0, 0, 0.46);
+  --mobile-backdrop: rgba(0, 0, 0, 0.4);
+
+  --brand-surface: var(--maroon);
+  --brand-text: var(--white);
+  --brand-accent: var(--yellow);
+  --brand-mark-ink: var(--maroon);
+  --brand-muted: var(--white);
+
+  --sidebar-surface: var(--white);
+  --sidebar-border: var(--line);
+  --nav-text: var(--muted);
+  --nav-hover-background: var(--yellow-soft);
+  --nav-active-icon-border: var(--yellow);
+  --nav-active-icon-text: var(--maroon);
+  --nav-active-icon-background: var(--yellow);
+  --online: var(--yellow);
+  --online-ring: var(--yellow-soft-strong);
+  --topbar-background: color-mix(in srgb, var(--white) 96%, var(--yellow));
+  --sticky-background: var(--topbar-background);
+
+  --button-secondary-text: var(--ink);
+  --button-secondary-border-hover: var(--maroon);
+  --button-disabled-text: var(--faint);
+  --button-disabled-background: color-mix(in srgb, var(--black) 7%, var(--white));
+
+  --panel-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(99, 8, 25, 0.06);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --drawer-shadow: -18px 0 50px rgba(0, 0, 0, 0.16);
+
+  --success-border: color-mix(in srgb, var(--yellow) 58%, var(--black));
+  --danger-outline: color-mix(in srgb, var(--maroon) 42%, var(--white));
+  --spinner-track: var(--maroon-soft-strong);
+  --spinner-light-track: rgba(255, 255, 255, 0.38);
+
+  /* Legacy aliases. They resolve to maroon or yellow. */
+  --green: var(--maroon);
+  --green-dark: var(--maroon-deep);
+  --green-soft: var(--maroon-soft);
+  --red: var(--maroon);
+  --red-dark: var(--maroon-deep);
+  --red-soft: var(--maroon-soft);
+  --red-border: var(--danger-outline);
+  --blue: var(--maroon);
+  --gold: var(--yellow-deep);
+  --gold-dark: var(--yellow-deep);
+  --gold-soft: var(--yellow-soft);
+  --charcoal: var(--maroon);
+}
