@@ -1,4 +1,11 @@
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/api";
+function apiBaseUrl() {
+  const configured = String(import.meta.env.VITE_API_URL ?? "http://localhost:3000")
+    .trim()
+    .replace(/\/+$/, "");
+  return configured.endsWith("/api") ? configured : `${configured}/api`;
+}
+
+const API_URL = apiBaseUrl();
 const TOKEN_KEY = "accessToken";
 
 let unauthorizedHandler = () => {};
