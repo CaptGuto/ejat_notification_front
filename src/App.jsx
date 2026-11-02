@@ -5,6 +5,8 @@ import { LanguageSwitch, RoleBadge, Spinner } from "./components/ui";
 import { fullName, initials, roleLabel } from "./format";
 import { useI18n } from "./i18n";
 import { ActivityPage } from "./pages/ActivityPage";
+import { ApprovalsPage } from "./pages/ApprovalsPage";
+import { ContactsPage } from "./pages/ContactsPage";
 import { HistoryPage } from "./pages/HistoryPage";
 import { LoginPage } from "./pages/LoginPage";
 import { ProfilePage } from "./pages/ProfilePage";
@@ -13,8 +15,15 @@ import { SendPage } from "./pages/SendPage";
 import { UsersPage } from "./pages/UsersPage";
 import "./app.css";
 
-const ADMIN_ROUTES = new Set(["/projects", "/users", "/activity", "/profile"]);
-const MEMBER_ROUTES = new Set(["/send", "/history", "/profile"]);
+const ADMIN_ROUTES = new Set([
+  "/projects",
+  "/users",
+  "/contacts",
+  "/approvals",
+  "/activity",
+  "/profile",
+]);
+const MEMBER_ROUTES = new Set(["/send", "/contacts", "/history", "/profile"]);
 
 function normalizePath(pathname) {
   const path = pathname && pathname !== "/" ? pathname.replace(/\/$/, "") : "/";
@@ -112,10 +121,13 @@ function Shell() {
       ? [
           { path: "/projects", label: "Projects", symbol: "P" },
           { path: "/users", label: "Users", symbol: "U" },
+          { path: "/contacts", label: "Contacts", symbol: "C" },
+          { path: "/approvals", label: "Approvals", symbol: "V" },
           { path: "/activity", label: "Activity", symbol: "A" },
         ]
       : [
           { path: "/send", label: "Send", symbol: "S" },
+          { path: "/contacts", label: "Contacts", symbol: "C" },
           { path: "/history", label: "History", symbol: "H" },
         ];
 
@@ -213,6 +225,8 @@ function Shell() {
         <main className="page-content">
           {route === "/projects" ? <ProjectsPage navigate={navigate} /> : null}
           {route === "/users" ? <UsersPage /> : null}
+          {route === "/contacts" ? <ContactsPage /> : null}
+          {route === "/approvals" ? <ApprovalsPage /> : null}
           {route === "/activity" ? <ActivityPage search={search} navigate={navigate} /> : null}
           {route === "/send" ? <SendPage navigate={navigate} /> : null}
           {route === "/history" ? <HistoryPage /> : null}

@@ -2,6 +2,7 @@ const LOCAL_MOBILE = /^9\d{8}$/;
 
 export const MESSAGE_MAX = 335;
 export const PHONE_MAX = 500;
+export const APPROVAL_THRESHOLD = 100;
 
 export function messageLength(value) {
   return [...String(value).trim()].length;

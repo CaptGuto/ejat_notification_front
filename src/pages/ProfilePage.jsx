@@ -2,7 +2,14 @@ import { useState } from "react";
 import { api } from "../api";
 import { ErrorNotice, PageHeader, PasswordField, RoleBadge, SuccessNotice } from "../components/ui";
 import { useAuth } from "../auth";
-import { formatDateTime, fullName, initials, passwordTooLong, roleLabel } from "../format";
+import {
+  formatDateTime,
+  fullName,
+  initials,
+  passwordTooLong,
+  passwordTooShort,
+  roleLabel,
+} from "../format";
 import { useI18n } from "../i18n";
 
 export function ProfilePage() {
@@ -35,6 +42,10 @@ export function ProfilePage() {
     if (newPassword || confirmPassword || currentPassword) {
       if (!newPassword) {
         setFormError("Password is required.");
+        return;
+      }
+      if (passwordTooShort(newPassword)) {
+        setFormError("Password must be at least 8 characters.");
         return;
       }
       if (passwordTooLong(newPassword)) {

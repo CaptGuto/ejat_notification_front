@@ -107,13 +107,21 @@ export function StatusBadge({ active }) {
   );
 }
 
+const QUEUE_LABELS = {
+  FAILED: "Failed",
+  PENDING: "Waiting",
+  REJECTED: "Rejected",
+  QUEUED: "Queued",
+};
+
 export function QueueBadge({ status }) {
   const { t } = useI18n();
-  const failed = status === "FAILED";
+  const label = QUEUE_LABELS[status] ?? "Queued";
+  const tone = status === "FAILED" || status === "REJECTED" ? "badge-failed" : "badge-queued";
   return (
-    <span className={`badge ${failed ? "badge-failed" : "badge-queued"}`}>
+    <span className={`badge ${tone}`}>
       <span className="status-dot" aria-hidden="true" />
-      {failed ? t("Failed") : t("Queued")}
+      {t(label)}
     </span>
   );
 }

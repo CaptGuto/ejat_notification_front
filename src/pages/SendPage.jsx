@@ -12,6 +12,7 @@ import { formatNumber, formatYearMonth } from "../format";
 import { useAuth } from "../auth";
 import { useI18n } from "../i18n";
 import {
+  APPROVAL_THRESHOLD,
   MESSAGE_MAX,
   PHONE_MAX,
   analyzePhones,
@@ -36,6 +37,8 @@ export function SendPage({ navigate }) {
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState(null);
   const [tick, setTick] = useState(0);
+  const [contacts, setContacts] = useState([]);
+  const [contactQuery, setContactQuery] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -63,11 +66,34 @@ export function SendPage({ navigate }) {
     };
   }, [tick, setUsage]);
 
+  useEffect(() => {
+    let active = true;
+    api("/contacts")
+      .then((body) => {
+        if (active) setContacts(Array.isArray(body) ? body : []);
+      })
+      .catch(() => {
+        if (active) setContacts([]);
+      });
+    return () => {
+      active = false;
+    };
+  }, [tick]);
+
   const analysis = useMemo(() => analyzePhones(phonesText), [phonesText]);
+  const visibleContacts = useMemo(() => {
+    const needle = contactQuery.trim().toLowerCase();
+    if (!needle) return contacts;
+    return contacts.filter(
+      (contact) =>
+        contact.name.toLowerCase().includes(needle) || contact.phone.includes(needle),
+    );
+  }, [contactQuery, contacts]);
   const length = messageLength(message);
   const currentUsage = summary?.usage ?? usage;
   const project = summary?.project ?? user.project;
   const inactive = project ? project.isActive === false : false;
+  const needsApproval = analysis.phones.length > APPROVAL_THRESHOLD;
   const overQuota = Boolean(
     currentUsage && analysis.phones.length > currentUsage.remaining,
   );
@@ -97,6 +123,34 @@ export function SendPage({ navigate }) {
 
   function editPhones(value) {
     setPhonesText(value);
+    setServerInvalid([]);
+    setResult(null);
+  }
+
+  function addContact(contact) {
+    if (analysis.phones.includes(contact.phone)) return;
+    setPhonesText((current) => {
+      const trimmed = current.trim();
+      if (!trimmed) return `${contact.phone},`;
+      const separator = /,\s*$/.test(trimmed) ? " " : ", ";
+      return `${trimmed}${separator}${contact.phone},`;
+    });
+    setServerInvalid([]);
+    setResult(null);
+  }
+
+  function removeContact(contact) {
+    const remaining = analysis.items
+      .filter((item) => item.normalized !== contact.phone)
+      .map((item) => item.original);
+    if (remaining.length === 0) {
+      setPhonesText("");
+    } else if (phonesText.includes(",")) {
+      const trailingComma = /,\s*$/.test(phonesText.trim());
+      setPhonesText(`${remaining.join(", ")}${trailingComma ? "," : ""}`);
+    } else {
+      setPhonesText(remaining.join("\n"));
+    }
     setServerInvalid([]);
     setResult(null);
   }
@@ -174,6 +228,62 @@ export function SendPage({ navigate }) {
 
       {currentUsage ? <UsageCards usage={currentUsage} /> : null}
 
+      <div className="send-layout">
+      <section className="panel contact-picker">
+        <header className="panel-header">
+          <div>
+            <h2>{t("Contacts")}</h2>
+            <p>{t("Click + to add a number, or − to remove it.")}</p>
+          </div>
+          <button
+            className="button button-secondary button-compact"
+            type="button"
+            onClick={() => navigate("/contacts")}
+          >
+            {t("Manage contacts")}
+          </button>
+        </header>
+        <div className="panel-pad contact-picker-body">
+          {contacts.length === 0 ? (
+            <p className="field-help">{t("No saved contacts yet.")}</p>
+          ) : (
+            <>
+              <input
+                value={contactQuery}
+                onChange={(event) => setContactQuery(event.target.value)}
+                placeholder={t("Search by name or phone")}
+                aria-label={t("Search contacts")}
+              />
+              <ul className="contact-picker-list">
+                {visibleContacts.map((contact) => {
+                  const alreadyAdded = analysis.phones.includes(contact.phone);
+                  return (
+                    <li key={contact.id}>
+                      <span>
+                        <strong>{contact.name}</strong>
+                        <small>{contact.phone}</small>
+                      </span>
+                      <button
+                        className={`icon-button${alreadyAdded ? " icon-button-remove" : ""}`}
+                        type="button"
+                        aria-label={
+                          alreadyAdded
+                            ? t("Remove {name}", { name: contact.name })
+                            : t("Add {name}", { name: contact.name })
+                        }
+                        onClick={() => (alreadyAdded ? removeContact(contact) : addContact(contact))}
+                      >
+                        {alreadyAdded ? "−" : "+"}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
+        </div>
+      </section>
+
       <section className="panel">
         <header className="panel-header">
           <div>
@@ -198,7 +308,18 @@ export function SendPage({ navigate }) {
             </div>
           ) : null}
 
-          {result ? (
+          {result?.pendingApproval ? (
+            <WarningNotice>
+              <strong>
+                {t("{count} numbers are waiting for a super admin.", {
+                  count: formatNumber(result.phones?.length ?? analysis.phones.length, language),
+                })}
+              </strong>
+              <p>{t("Nothing was queued yet.")}</p>
+            </WarningNotice>
+          ) : null}
+
+          {result && !result.pendingApproval ? (
             <SuccessNotice>
               <strong>
                 {t("{queued} numbers were queued.", {
@@ -333,13 +454,22 @@ export function SendPage({ navigate }) {
             </p>
           ) : null}
 
+          {needsApproval && !overQuota && !hasInvalid ? (
+            <WarningNotice title="More than 100 numbers need a super admin before anything is queued." />
+          ) : null}
+
           <div className="form-actions">
             <button className="button button-primary" type="submit" disabled={!canSend}>
-              {sending ? t("Sending...") : t("Send message")}
+              {sending
+                ? t("Sending...")
+                : needsApproval
+                  ? t("Request approval")
+                  : t("Send message")}
             </button>
           </div>
         </form>
       </section>
+      </div>
 
       <section className="panel">
         <header className="panel-header">

@@ -11,7 +11,7 @@ import {
   StatusBadge,
   SuccessNotice,
 } from "../components/ui";
-import { fullName, initials, passwordTooLong, roleLabel } from "../format";
+import { fullName, initials, passwordTooLong, passwordTooShort, roleLabel } from "../format";
 import { useI18n } from "../i18n";
 
 const emptyForm = {
@@ -295,6 +295,10 @@ function UserDrawer({ mode, user, projects, onClose, onSaved }) {
     event.preventDefault();
     setError(null);
     const password = form.password;
+    if (password && passwordTooShort(password)) {
+      setFormError("Password must be at least 8 characters.");
+      return;
+    }
     if (passwordTooLong(password)) {
       setFormError("Password must be 72 characters or fewer.");
       return;
@@ -453,7 +457,7 @@ function UserDrawer({ mode, user, projects, onClose, onSaved }) {
                 required={mode === "create"}
                 help={
                   mode === "create"
-                    ? "Share this password with the user. 72 characters at most."
+                    ? "Share this password with the user. 8 to 72 characters."
                     : "Leave blank to keep the current password."
                 }
               />

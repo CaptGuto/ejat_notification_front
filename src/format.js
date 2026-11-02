@@ -39,6 +39,10 @@ export function formatYearMonth(yearMonth, language) {
   }).format(new Date(Date.UTC(year, month - 1, 15)));
 }
 
+export function passwordTooShort(password) {
+  return password.length > 0 && password.length < 8;
+}
+
 export function passwordTooLong(password) {
   return password.length > 72;
 }
