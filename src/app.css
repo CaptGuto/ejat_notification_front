@@ -507,7 +507,7 @@ strong {
   background: var(--maroon);
 }
 
-.nav-symbol {
+/* .nav-symbol {
   width: 24px;
   height: 24px;
   display: inline-grid;
@@ -520,6 +520,14 @@ strong {
   font-family: Georgia, "Times New Roman", "Noto Sans Ethiopic", serif;
   font-size: 12px;
   font-weight: 700;
+} */
+
+.nav-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
 }
 
 .main-nav button.active .nav-symbol {

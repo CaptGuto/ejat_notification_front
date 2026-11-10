@@ -14,6 +14,15 @@ import { ProjectsPage } from "./pages/ProjectsPage";
 import { SendPage } from "./pages/SendPage";
 import { UsersPage } from "./pages/UsersPage";
 import "./app.css";
+import {
+  FolderKanban,
+  Users,
+  Contact,
+  CheckCircle2,
+  Activity,
+  Send,
+  History,
+} from "lucide-react";
 
 const ADMIN_ROUTES = new Set([
   "/projects",
@@ -119,17 +128,17 @@ function Shell() {
   const navItems =
     user.role === "SUPER_ADMIN"
       ? [
-          { path: "/projects", label: "Projects", symbol: "P" },
-          { path: "/users", label: "Users", symbol: "U" },
-          { path: "/contacts", label: "Contacts", symbol: "C" },
-          { path: "/approvals", label: "Approvals", symbol: "V" },
-          { path: "/activity", label: "Activity", symbol: "A" },
-        ]
+        { path: "/projects",  label: "Projects",  icon: FolderKanban },
+        { path: "/users",     label: "Users",     icon: Users },
+        { path: "/contacts",  label: "Contacts",  icon: Contact },
+        { path: "/approvals", label: "Approvals", icon: CheckCircle2 },
+        { path: "/activity",  label: "Activity",  icon: Activity },
+      ]
       : [
-          { path: "/send", label: "Send", symbol: "S" },
-          { path: "/contacts", label: "Contacts", symbol: "C" },
-          { path: "/history", label: "History", symbol: "H" },
-        ];
+        { path: "/send",     label: "Send",     icon: Send },
+        { path: "/contacts", label: "Contacts", icon: Contact },
+        { path: "/history",  label: "History",  icon: History },
+      ];
 
   return (
     <div className="app-shell">
@@ -146,20 +155,23 @@ function Shell() {
 
         <nav className="main-nav" aria-label={t("Main navigation")}>
           <p>{t("Workspace")}</p>
-          {navItems.map((item) => (
-            <button
-              type="button"
-              key={item.path}
-              className={route === item.path ? "active" : ""}
-              aria-current={route === item.path ? "page" : undefined}
-              onClick={() => navigate(item.path)}
-            >
-              <span className="nav-symbol" aria-hidden="true">
-                {item.symbol}
-              </span>
-              {t(item.label)}
-            </button>
-          ))}
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            return (
+                <button
+                  type="button"
+                  key={item.path}
+                  className={route === item.path ? "active" : ""}
+                  aria-current={route === item.path ? "page" : undefined}
+                  onClick={() => navigate(item.path)}
+                >
+                    <span className="nav-symbol" aria-hidden="true">
+                      <Icon size={18} />
+                    </span>
+                  {t(item.label)}
+                </button>
+              );
+            })}
         </nav>
 
         <div className={`sidebar-profile${route === "/profile" ? " active" : ""}`}>
